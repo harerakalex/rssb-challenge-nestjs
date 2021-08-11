@@ -1,6 +1,9 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty } from '@nestjs/swagger';
+import { IsAlphanumeric, MaxLength } from 'class-validator';
 
 export class createUserDto {
-    @ApiProperty()
-    name: string
+  @ApiProperty()
+  @IsAlphanumeric()
+  @MaxLength(10)
+  name: string;
 }
