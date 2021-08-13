@@ -1,5 +1,7 @@
+import { Injectable } from '@nestjs/common';
 import { utils, WorkBook } from 'xlsx';
 
+@Injectable()
 export class FileReader {
   formatFileData(file: WorkBook) {
     const data: unknown[] = [];
