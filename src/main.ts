@@ -12,6 +12,10 @@ async function bootstrap() {
     .setTitle('RSSB Challenge')
     .setDescription('The app to read and manipulate a file')
     .setVersion('1.0')
+    .addBearerAuth({
+      type: 'http',
+      in: 'header',
+    })
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

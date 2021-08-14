@@ -20,6 +20,10 @@ export class RedisCache {
     const data = await this.client().get(key);
     return JSON.parse(data);
   }
+
+  async empty() {
+    return await this.client().flushall();
+  }
 }
 
 export default RedisCache;

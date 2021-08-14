@@ -9,5 +9,21 @@ export class User {
 
   @ApiProperty()
   @Column()
-  name: string;
+  names: string;
+
+  @ApiProperty()
+  @Column()
+  nid: string;
+
+  @ApiProperty()
+  @Column()
+  phone: string;
+
+  @ApiProperty()
+  @Column()
+  gender: string;
+
+  @ApiProperty()
+  @Column()
+  email: string;
 }
