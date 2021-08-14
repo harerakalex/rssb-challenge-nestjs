@@ -1,5 +1,4 @@
 import {
-  Body,
   Controller,
   Get,
   Param,
@@ -34,6 +33,8 @@ import { FileReader } from './utils/filereader.utils';
 import { RedisCache } from '../helpers/redis.helpers';
 import { AuthGuard } from '../guards/auth.guard';
 import { fieldsValidator } from '../helpers/validator.helper';
+import { paginator } from '../helpers/paginator.helper';
+import { ListAllQueries } from './dto/list-all-queries';
 
 const storage = diskStorage({
   filename: function (req, file, cb) {
@@ -93,13 +94,18 @@ export class UsersController {
 
   @ApiBearerAuth()
   @ApiOkResponse({ type: User, isArray: true })
-  @ApiQuery({ name: 'name', required: false })
+  @ApiQuery({ name: 'page', required: false })
+  @ApiQuery({ name: 'limit', required: false })
   @UseGuards(AuthGuard)
   @Get()
-  async getUsers(@Query('name') name?: string): Promise<createUserDto[]> {
+  async getUsers(@Query() query: ListAllQueries): Promise<createUserDto[]> {
     const data = await this.redisCache.fetch('data');
 
-    return fieldsValidator(data);
+    if (data === null) return [];
+
+    const { offset, limit } = paginator(data.length, parseInt(query.page), parseInt(query.limit));
+
+    return fieldsValidator(data).slice(offset, offset + limit);
   }
 
   @ApiBearerAuth()
@@ -121,7 +127,11 @@ export class UsersController {
   @ApiBadRequestResponse()
   @UseGuards(AuthGuard)
   @Post()
-  async createUser(@Body() body: createUserDto): Promise<User> {
-    return await this.usersService.createUser(body);
+  async createUser(): Promise<User[]> {
+    const data = await this.redisCache.fetch('data');
+
+    if (data === null) return [];
+
+    return await this.usersService.createUser(data);
   }
 }
