@@ -11,13 +11,9 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import {
-  ApiBadRequestResponse,
   ApiBearerAuth,
   ApiBody,
   ApiConsumes,
-  ApiCreatedResponse,
-  ApiNotFoundResponse,
-  ApiOkResponse,
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
@@ -51,7 +47,6 @@ export class UsersController {
     private redisCache: RedisCache,
   ) {}
 
-  @ApiOkResponse()
   @Get('token')
   getToken() {
     const token = sign(
@@ -67,7 +62,6 @@ export class UsersController {
   }
 
   @ApiBearerAuth()
-  @ApiCreatedResponse({ type: User })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
@@ -93,9 +87,8 @@ export class UsersController {
   }
 
   @ApiBearerAuth()
-  @ApiOkResponse({ type: User, isArray: true })
-  @ApiQuery({ name: 'page', required: false })
-  @ApiQuery({ name: 'limit', required: false })
+  @ApiQuery({name: 'page', required: false})
+  @ApiQuery({name: 'limit', required: false})
   @UseGuards(AuthGuard)
   @Get()
   async getUsers(@Query() query: ListAllQueries): Promise<createUserDto[]> {
@@ -109,8 +102,6 @@ export class UsersController {
   }
 
   @ApiBearerAuth()
-  @ApiOkResponse({ type: User })
-  @ApiNotFoundResponse()
   @UseGuards(AuthGuard)
   @Get(':id')
   async getUserById(@Param('id', ParseIntPipe) id: number): Promise<User> {
@@ -123,8 +114,6 @@ export class UsersController {
   }
 
   @ApiBearerAuth()
-  @ApiCreatedResponse({ type: User })
-  @ApiBadRequestResponse()
   @UseGuards(AuthGuard)
   @Post()
   async createUser(): Promise<User[]> {
